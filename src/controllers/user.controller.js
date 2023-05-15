@@ -32,5 +32,14 @@ module.exports = {
 
         return res.status(200).json(USER_DATA_RESPONSE);
 
-    }
+    },
+    createUser: async (req, res) => {
+
+    },
+    updateUser: async (req, res) => {
+
+    },
+    deleteUser: async (req, res) => {
+
+    },
 };

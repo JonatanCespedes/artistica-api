@@ -9,7 +9,11 @@ const getCategories = async () => {
 };
 
 const getCategoryById = async (id) => {
-  return await Category.findByPk(id);
+  return await Category.findByPk(id, {
+    include: [
+      { association: "subcategories", include: [{ association: "products" }] },
+    ],
+  });
 };
 
 module.exports = {
