@@ -129,19 +129,19 @@ module.exports = {
   },
   removeOneItemFromOrder: async (req, res) => {
     try {
-      // id usuario
-      const { id: userId } = req.user;
-
       // id item
       const { itemId } = req.params;
 
       const item = await getOrderItemById(itemId);
 
+      // Si el item no existe, retorna error
+      if (!item) return res.status(400).json("El item no existe");
+
       if (item.quantity > 1) {
         // Si el item en el campo quatity tiene mas de 1, actualizo la cantidad (+1)
         const updatedItem = {
           ...item,
-          quantity: item.quantity + 1,
+          quantity: item.quantity - 1,
         };
         const updateItemResult = await updateOrderItem(updatedItem, itemId);
 
@@ -172,13 +172,12 @@ module.exports = {
   },
   removeAllFromOrder: async (req, res) => {
     try {
-      // id usuario
-      const { id: userId } = req.user;
-
       // id item
       const { itemId } = req.params;
 
       const item = await getOrderItemById(itemId);
+      // Si el item no existe, retorna error
+      if (!item) return res.status(400).json("El item no existe");
 
       const itemsOrder = await getOrderItemsByOrder(item.orderId);
 
@@ -209,16 +208,15 @@ module.exports = {
   },
   clearOrder: async (req, res) => {
     try {
-      // id usuario
-      const { id: userId } = req.user;
-
       // id orden
       const { orderId } = req.params;
       // Elimino los items de la orden
       const itemsDeleteResult = await bulkDeleteOrderItems(orderId);
       // Elimino la orden
       const orderDeleteResult = await deleteOrder(orderId);
-
+      console.log(itemsDeleteResult);
+      console.log(orderDeleteResult);
+      console.log(itemsDeleteResult && orderDeleteResult);
       itemsDeleteResult && orderDeleteResult
         ? res.status(200).json("Orden eliminada correctamente")
         : res.status(400).json("Hubo un error al eliminar la orden");
